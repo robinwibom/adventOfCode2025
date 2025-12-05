@@ -1,62 +1,49 @@
 def solution_1(id_range: str) -> int:
-    invalid_ids = []
+    start, stop = map(int, id_range.split("-"))
+    total = 0
 
-    start_id = int(id_range.split("-")[0])
-    stop_id = int(id_range.split("-")[-1])
+    for value in range(start, stop + 1):
+        s = str(value)
 
-    value_range = stop_id - start_id
+        # Only possible if the length is even
+        if len(s) % 2 != 0:
+            continue
 
-    for i in range(0, value_range + 1):
-        id = str(start_id + i)
+        mid = len(s) // 2
+        if s[:mid] == s[mid:]:
+            total += value
 
-        if len(id) % 2 == 0:
-            firstpart, secondpart = id[: len(id) // 2], id[len(id) // 2 :]
-            if firstpart == secondpart:
-                invalid_id = firstpart + secondpart
-                invalid_ids.append(int(invalid_id))
-
-    return sum(invalid_ids)
-
-
-def generate_substrings(string: str) -> list[str]:
-    substrings = []
-    for i in range(1, len(string) + 1):
-        substrings.append(string[:i])
-        # print(substrings[-1])
-    return substrings
+    return total
 
 
 def solution_2(id_range: str) -> int:
-    invalid_ids = []
+    start, stop = map(int, id_range.split("-"))
+    total = 0
 
-    start_id = int(id_range.split("-")[0])
-    stop_id = int(id_range.split("-")[-1])
+    for value in range(start, stop + 1):
+        s = str(value)
+        n = len(s)
 
-    value_range = stop_id - start_id
-    for i in range(0, value_range + 1):
-        id = str(start_id + i)
-        n = len(id)
-        print(f"--- {id} ---")
-
-        for L in range(1, n):
-            if n % L != 0:
+        for L in range(1, n):  # try all possible repeating unit lengths
+            if n % L != 0:  # unit length must divide total length
                 continue
-            s = id[:L]
-            mult = n // L
-            if s * mult == id:
-                invalid_ids.append(int(id))
+
+            unit = s[:L]
+            reps = n // L
+
+            if unit * reps == s:
+                total += value
                 break
 
-    return sum(invalid_ids)
+    return total
 
 
 def solve(text: str):
     p1 = 0
     p2 = 0
 
-    id_ranges = text.split(",")
-    for id_range in id_ranges:
-        # p1 += solution_1(id_range)
+    for id_range in text.split(","):
+        p1 += solution_1(id_range)
         p2 += solution_2(id_range)
 
     return p1, p2
