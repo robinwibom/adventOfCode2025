@@ -9,12 +9,14 @@ def fetch_input(day: int, year: int = 2025) -> None:
 
     example_file = folder / "example.txt"
     if not example_file.exists():
+        print(f"Downloading example data for Day {day}...")
         puzzle = Puzzle(year=year, day=day)
         text = puzzle.examples[0].input_data if puzzle.examples else ""
         example_file.write_text(text)
     
     input_file = folder / "input.txt"
     if not input_file.exists():
+        print(f"Downloading input data for Day {day}...")
         text = get_data(day=day, year=year)
         input_file.write_text(text)
 
