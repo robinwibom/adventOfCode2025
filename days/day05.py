@@ -1,32 +1,55 @@
-def solution_1(text: str):
-    fresh_ids = []
-    expired_ids = []
-    counter = 0
-    for line in text.splitlines():
-        if line:
-            counter += 1
-            start, stop = map(int, line.split("-"))
-            for i in range(start, stop+1):
-                if i not in fresh_ids:
-                    fresh_ids.append(i)
-                    fresh_ids.sort()
+def parse_input(text: str):
+    # split ranges and available IDs
+    lines = text.strip().splitlines()
+    blank = lines.index("")
+    range_lines = lines[:blank]
+    id_lines = lines[blank + 1 :]
+    return range_lines, id_lines
+
+
+def parse_ranges(range_lines: list[str]) -> list[tuple[int, int]]:
+    # convert "a-b" into (a, b)
+    ranges = [tuple(map(int, line.split("-"))) for line in range_lines]
+    ranges.sort()
+    return ranges
+
+
+def merge_ranges(ranges: list[tuple[int, int]]) -> list[list[int]]:
+    merged = []
+    for start, end in ranges:
+        if not merged or start > merged[-1][1] + 1:
+            merged.append([start, end])
         else:
-            break
-    
-    # We now that the id's start on line counter + 1
-    counter_2 = 0
-    for line in text.splitlines():
-        if counter_2 <= counter:
-            counter_2 += 1
-            continue
-
-        if int(line) not in fresh_ids:
-            expired_ids.append(int(line))
-
-    return len(expired_ids)
+            merged[-1][1] = max(merged[-1][1], end)
+    return merged
 
 
-def solve(input_text: str) -> tuple[int | str, int | str]:
-    part2 = 0
-    
-    return solution_1(input_text), part2
+def is_fresh(x: int, merged: list[list[int]]) -> bool:
+    for a, b in merged:
+        if a <= x <= b:
+            return True
+        if x < a:
+            return False
+    return False
+
+
+def solution_1(text: str) -> int:
+    range_lines, id_lines = parse_input(text)
+    ranges = parse_ranges(range_lines)
+    merged = merge_ranges(ranges)
+
+    # count available IDs that fall into any merged range
+    return sum(1 for line in id_lines if is_fresh(int(line), merged))
+
+
+def solution_2(text: str) -> int:
+    range_lines, _ = parse_input(text)
+    ranges = parse_ranges(range_lines)
+    merged = merge_ranges(ranges)
+
+    # sum lengths of all merged ranges
+    return sum(b - a + 1 for a, b in merged)
+
+
+def solve(text: str):
+    return solution_1(text), solution_2(text)
