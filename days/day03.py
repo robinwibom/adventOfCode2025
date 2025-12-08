@@ -1,5 +1,12 @@
+# Day 03 - Digit Selection
+# Part A: Find the largest two-digit number formed by picking any two digits from
+#         a string (in order, first digit before second).
+# Part B: Find the largest 12-digit number formed by greedily selecting 12 digits
+#         from the string while maintaining their original order.
+
+
 def solution_1(line: str) -> int:
-    digits =[int(c) for c in line]
+    digits = [int(c) for c in line]
     n = len(digits)
 
     best_right = [-1] * n
@@ -9,7 +16,7 @@ def solution_1(line: str) -> int:
     for i in range(n - 1, -1, -1):
         best_right[i] = best
         best = max(best, digits[i])
-    
+
     best_pair = -1
 
     # compute best two-digit number for each position
@@ -18,8 +25,9 @@ def solution_1(line: str) -> int:
             continue
         candidate = digits[i] * 10 + best_right[i]
         best_pair = max(best_pair, candidate)
-        
+
     return best_pair
+
 
 def solution_2(line: str) -> int:
     digits = [int(c) for c in line]
@@ -49,7 +57,7 @@ def solution_2(line: str) -> int:
         chosen.append(best_digit)
         start = best_index + 1
 
-    weights = [10 ** exp for exp in range(k - 1, -1, -1)]
+    weights = [10**exp for exp in range(k - 1, -1, -1)]
     value = sum(d * w for d, w in zip(chosen, weights))
 
     return value

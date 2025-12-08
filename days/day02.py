@@ -1,3 +1,10 @@
+# Day 02 - Repeating Digit Patterns
+# Part A: Sum all numbers in given ranges where the digits form a "doubled" pattern
+#         (first half equals second half, e.g., 1212, 123123).
+# Part B: Sum all numbers in given ranges where the digits form any repeating pattern
+#         (e.g., 111, 1212, 123123).
+
+
 def solution_1(id_range: str) -> int:
     start, stop = map(int, id_range.split("-"))
     total = 0

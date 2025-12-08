@@ -1,3 +1,8 @@
+# Day 05 - Fresh ID Ranges
+# Part A: Count how many given IDs fall within any of the "fresh" ranges.
+# Part B: Count the total number of fresh IDs across all merged ranges.
+
+
 def parse_input(text: str):
     # split ranges and available IDs
     lines = text.strip().splitlines()
