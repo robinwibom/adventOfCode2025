@@ -16,31 +16,42 @@ def p1(numbers: list[list[int]], operations: list[str]) -> int:
 
 def p2(numbers: list[list[int]], operations: list[str]) -> int:
     result = 0
-    columns = list(zip(*numbers))
 
-    for col, op in zip(columns, operations):
-        print(col)
-        max_length = len(str(max(col)))
-        # Damn, I can't just naivley padd right...
-        padded_numbers = [str(x).rjust(max_length, "X") for x in col]
-        print(f"-> {padded_numbers}")
-        digit_numbers = []
+    blocks = []
+    current_block = []
+    for row in numbers:
+        if all(c == " " for c in row):  # separator block
+            blocks.append(current_block)
+            current_block = []
+        else:
+            number = ""
+            for c in row:
+                number += c
+            current_block.append(int(number))
 
-        for i in range(max_length):
-            digits = ""
-            for num in padded_numbers:
-                if num[i] != "X":
-                    digits += num[i]
-            if digits:
-                digit_numbers.append(int(digits))
+    if current_block:  # need to add last block as well
+        blocks.append(current_block)
 
-        print(f"-> {digit_numbers}")
+    for col, op in zip(blocks, operations):
         if op == "+":
-            result += sum(digit_numbers)
+            result += sum(col)
         elif op == "*":
-            result += math.prod(digit_numbers)
+            result += math.prod(col)
 
     return result
+
+
+def parse_text(text: str):
+    lines = text.rstrip("\n").splitlines()[:-1]
+
+    max_len = max(len(line) for line in lines)
+    padded = [line.ljust(max_len) for line in lines]
+
+    numbers = [list(line) for line in padded]
+
+    operations = text.strip().splitlines()[-1].split()
+
+    return list(zip(*numbers)), operations
 
 
 def solve(input_text: str) -> tuple[int | str, int | str]:
@@ -49,4 +60,5 @@ def solve(input_text: str) -> tuple[int | str, int | str]:
     ]
     operations = input_text.strip().splitlines()[-1].split()
 
-    return p1(numbers, operations), p2(numbers, operations)
+    numbers2, operations2 = parse_text(input_text)
+    return p1(numbers, operations), p2(numbers2, operations2)
